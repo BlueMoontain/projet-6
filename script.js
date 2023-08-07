@@ -12,13 +12,16 @@ const init = () => {
 
   const addBookButton = document.createElement('button');
   addBookButton.textContent = 'Ajouter un livre';
-  addBookButton.addEventListener('click', showForm) //montrer form, cacher bouton;
+  addBookButton.addEventListener('click', showForm)
+  addBookButton.id = 'addBookButton' 
   newBookTitle.after(addBookButton);
 
   //showForm();
+  //montrer form, cacher bouton;
 
   function showForm() {
     const form = document.createElement('form');
+    form.id ="bookForm";
 
     const inputTitle = document.createElement('input');
     inputTitle.setAttribute('type', 'text');
@@ -28,18 +31,38 @@ const init = () => {
     const inputAuthor = document.createElement('input');
     inputAuthor.setAttribute('type', 'text');
     inputAuthor.setAttribute('placeholder', 'Auteur');
+    inputAuthor.id = 'inputAuthor'
 
     const submitButton = document.createElement('button');
     submitButton.setAttribute('type', 'submit');
     submitButton.textContent = 'Enregistrer';
+    submitButton.id = 'submitButton';
+
+    const cancelButton = document.createElement('button'); 
+    cancelButton.textContent = 'Annuler';
+    cancelButton.id = 'cancelButton';
+    cancelButton.addEventListener('click', () => {
+      hideForm(form);
+      addBookButton.style.display = 'inline';
+    });
 
     //cancelButton => reset form, cacher form, montrer addBookButton
 
     form.appendChild(inputTitle);
     form.appendChild(inputAuthor);
     form.appendChild(submitButton);
+    form.appendChild(cancelButton);
 
     newBookTitle.after(form);
+    addBookButton.style.display = 'none';
+
+    function hideForm(form) {
+      if (form) {
+        form.reset(); 
+        form.remove();
+ 
+      }
+    }
     //form caché après init
 
     //addBookButton.disabled = true;
@@ -62,19 +85,10 @@ const init = () => {
       });
 }
 
-// const nouveauLivreTitle = document.querySelector('.h2');
-// nouveauLivreTitle.insertAdjacentElement('afterend', addBookButton);
-
 const form = document.querySelector('form');
 
 }
 
 // TO DO
-// créer formulaire OK
-// placer correctement le formulaire (sous addbookbutton) OK
 // placer les elements ("titre du livre"/"auteur") les uns en dessous des autres? CHECK
-// Afficher les mots clé saisis dans le formulaire dans la console au submit.  WIP Message erreur : Uncaught TypeError: Cannot read properties of null (reading 'addEventListener')
-
-// ???
-// _ aucune modification du HTML possible ?
 //fetch https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API

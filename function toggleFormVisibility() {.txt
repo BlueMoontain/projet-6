@@ -1,0 +1,11 @@
+  function toggleFormVisibility() {
+    form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    addBookButton.style.display = form.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function cancelForm() {
+    form.style.display = 'none'; // Cacher le formulaire
+    addBookButton.style.display = 'block'; // Afficher le bouton "Ajouter un livre"
+    form.reset(); // Réinitialiser le formulaire
+  }
+}
