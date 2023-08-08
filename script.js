@@ -32,23 +32,23 @@ const init = () => {
     inputAuthor.setAttribute('placeholder', 'Auteur');
     inputAuthor.id = 'inputAuthor'
 
-    const submitButton = document.createElement('button');
-    submitButton.setAttribute('type', 'submit');
-    submitButton.textContent = 'Enregistrer';
-    submitButton.id = 'submitButton';
+    const submitBookButton = document.createElement('button');
+    submitBookButton.setAttribute('type', 'submit');
+    submitBookButton.textContent = 'Enregistrer';
+    submitBookButton.id = 'submitBookButton';
 
-    const cancelButton = document.createElement('button'); 
-    cancelButton.textContent = 'Annuler';
-    cancelButton.id = 'cancelButton';
-    cancelButton.addEventListener('click', () => {
+    const cancelBookButton = document.createElement('button'); 
+    cancelBookButton.textContent = 'Annuler';
+    cancelBookButton.id = 'cancelButton';
+    cancelBookButton.addEventListener('click', () => {
       hideForm(form);
       addBookButton.style.display = 'inline';
     });
 
     form.appendChild(inputTitle);
     form.appendChild(inputAuthor);
-    form.appendChild(submitButton);
-    form.appendChild(cancelButton);
+    form.appendChild(submitBookButton);
+    form.appendChild(cancelBookButton);
 
     newBookTitle.after(form);
     addBookButton.style.display = 'none';
@@ -60,9 +60,6 @@ const init = () => {
  
       }
     }
-
-    //form caché après init -> addBookButton.disabled = true; -> addBookButton.remove(); 
-    // VS méthode : addbookbutton.style.display inline/none 
 
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
@@ -85,35 +82,31 @@ async function searchBooks(title, author) {
   const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${title}+inauthor:${author}`;
   const response = await fetch(apiUrl);
   const data = await response.json();
-  console.log(data);
+
+  if (data.items && data.items.length > 0) {
+    
+    for (const book of data.items) {
+      const bookInfo = {
+        title: book.volumeInfo.title,
+        authors: book.volumeInfo.authors,
+        description: book.volumeInfo.description,
+        // autres infos souhaitées
+// - identifiant ;
+// - auteur (s’il y a plusieurs auteurs, n’afficher que le premier) ;
+// - icône pour garder le livre dans sa liste (bookmark) ;
+// - description (limitée aux 200 premiers caractères) ;
+// - image
+
+      };
+// affichage dans la console
+      console.log('Livre trouvé :', bookInfo);
+    }
+  } else {
+    console.log('Aucun livre trouvé.');
+  }
+
   return data;
 }
 
-
-// }
-
 }
-
 // TO DO
-// placer les elements ("titre du livre"/"auteur") CSS
-//fetch https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-// function displaySearchResults(results) -> Afficher les résultats de recherche dans l'UX
-        // try {
-        //   const searchResults = await searchBooks(titleValue, authorValue);
-        //   displaySearchResults(searchResults);
-        // } 
-        // catch (error) {
-        //   console.error('Erreur lors de la recherche :', error);
-        // }
-
-// idéalement : 
-// fetch("url")
-        // .then(res =>res.json())
-        // .then(({ items: [ { results!? : { Title, Author } } ] }) => {
-        //   console.log(title);
-        //   console.log(author);
-        // }),
-
-        // error => {
-        //   console.log(error + 'probleme de recherche');
-        // };
