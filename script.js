@@ -16,8 +16,7 @@ const init = () => {
   addBookButton.id = 'addBookButton' 
   newBookTitle.after(addBookButton);
 
-  //showForm();
-  //montrer form, cacher bouton;
+  let searchResults;
 
   function showForm() {
     const form = document.createElement('form');
@@ -46,8 +45,6 @@ const init = () => {
       addBookButton.style.display = 'inline';
     });
 
-    //cancelButton => reset form, cacher form, montrer addBookButton
-
     form.appendChild(inputTitle);
     form.appendChild(inputAuthor);
     form.appendChild(submitButton);
@@ -63,32 +60,60 @@ const init = () => {
  
       }
     }
-    //form caché après init
 
-    //addBookButton.disabled = true;
-    //addBookButton.remove();
-    
-    form.addEventListener('submit', function (event) {
+    //form caché après init -> addBookButton.disabled = true; -> addBookButton.remove(); 
+    // VS méthode : addbookbutton.style.display inline/none 
+
+    form.addEventListener('submit', async function (event) {
         event.preventDefault();
       
         const inputs = form.querySelectorAll('input[type="text"]');
-
-        const titleValue2 = form.getElementById('inputTitle').value;
-      
         const titleValue = inputs[0].value;
         const authorValue = inputs[1].value;
       
         console.log('Titre du livre :', titleValue);
         console.log('Auteur :', authorValue);
-      
+        searchBooks(titleValue, authorValue);
+
         form.reset();
       });
 }
 
 const form = document.querySelector('form');
 
+async function searchBooks(title, author) {
+  const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${title}+inauthor:${author}`;
+  const response = await fetch(apiUrl);
+  const data = await response.json();
+  console.log(data);
+  return data;
+}
+
+
+// }
+
 }
 
 // TO DO
-// placer les elements ("titre du livre"/"auteur") les uns en dessous des autres? CHECK
+// placer les elements ("titre du livre"/"auteur") CSS
 //fetch https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
+// function displaySearchResults(results) -> Afficher les résultats de recherche dans l'UX
+        // try {
+        //   const searchResults = await searchBooks(titleValue, authorValue);
+        //   displaySearchResults(searchResults);
+        // } 
+        // catch (error) {
+        //   console.error('Erreur lors de la recherche :', error);
+        // }
+
+// idéalement : 
+// fetch("url")
+        // .then(res =>res.json())
+        // .then(({ items: [ { results!? : { Title, Author } } ] }) => {
+        //   console.log(title);
+        //   console.log(author);
+        // }),
+
+        // error => {
+        //   console.log(error + 'probleme de recherche');
+        // };
