@@ -18,6 +18,8 @@ const init = () => {
 
   let searchResults;
 
+  const results = [];
+
   function showForm() {
     const form = document.createElement('form');
     form.id ="bookForm";
@@ -89,19 +91,49 @@ async function searchBooks(title, author) {
       const bookInfo = {
         title: book.volumeInfo.title,
         authors: book.volumeInfo.authors,
-        description: book.volumeInfo.description,
-        // autres infos souhaitées
-// - identifiant ;
-// - auteur (s’il y a plusieurs auteurs, n’afficher que le premier) ;
-// - icône pour garder le livre dans sa liste (bookmark) ;
-// - description (limitée aux 200 premiers caractères) ;
-// - image
-
+        description: book.volumeInfo.description ? book.volumeInfo.description.slice(0, 200) + '...' : 'Aucune description disponible',
+        image: book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : '',
+        id: book.id,
       };
-// affichage dans la console
+
+      const bookDiv = document.createElement('div');
+      bookDiv.classList.add('book');
+
+      const titleP = document.createElement('p');
+      titleP.textContent = `Titre: ${bookInfo.title}`;
+
+      const authorP = document.createElement('p');
+      authorP.textContent = `Auteur: ${bookInfo.authors[0]}`;
+
+      const descriptionP = document.createElement('p');
+      descriptionP.textContent = `Description: ${bookInfo.description}`;
+
+      const bookmarkIcon = document.createElement('span');
+      bookmarkIcon.classList.add('bookmark-icon');
+
+      const image = document.createElement('img');
+      image.src = bookInfo.image;
+
+      const idP = document.createElement('p');
+      idP.textContent = `Identifiant: ${bookInfo.id}`;
+
+
+      bookDiv.appendChild(titleP);
+      bookDiv.appendChild(authorP);
+      bookDiv.appendChild(descriptionP);
+      bookDiv.appendChild(bookmarkIcon);
+      bookDiv.appendChild(image);
+      bookDiv.appendChild(idP);
+
+      results.push(bookDiv);
+
       console.log('Livre trouvé :', bookInfo);
+    
     }
-  } else {
+
+    }
+  
+    else {
     console.log('Aucun livre trouvé.');
   }
 
@@ -109,4 +141,11 @@ async function searchBooks(title, author) {
 }
 
 }
-// TO DO
+
+
+        // autres infos souhaitées
+// - identifiant ;
+// - auteur (s’il y a plusieurs auteurs, n’afficher que le premier) ;
+// - icône pour garder le livre dans sa liste (bookmark) ;
+// - description (limitée aux 200 premiers caractères) ;
+// - image
