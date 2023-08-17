@@ -9,6 +9,7 @@ const ready = () => {
 const init = () => {
   const myBooksDiv = document.getElementById('myBooks');
   const newBookTitle = myBooksDiv.querySelector('h2');
+  const divContent = document.getElementById('content');
 
   const addBookButton = document.createElement('button');
   addBookButton.textContent = 'Ajouter un livre';
@@ -16,9 +17,12 @@ const init = () => {
   addBookButton.id = 'addBookButton' 
   newBookTitle.after(addBookButton);
 
-  let searchResults;
-
-  const results = [];
+  const searchResults = document.createElement('div');
+  searchResults.id = 'searchResultsDiv';
+  const searchResultsTitle = document.createElement('h2');
+  searchResultsTitle.textContent = 'Résultats de recherche';
+  searchResults.appendChild(searchResultsTitle);
+  divContent.appendChild(searchResults);
 
   function showForm() {
     const form = document.createElement('form');
@@ -84,17 +88,21 @@ async function searchBooks(title, author) {
   const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${title}+inauthor:${author}`;
   const response = await fetch(apiUrl);
   const data = await response.json();
+  const results = [];
+  const searchResults = document.getElementById('searchResultsDiv');
+  searchResults.querySelectorAll('*').forEach(n => n.remove());
 
   if (data.items && data.items.length > 0) {
     
     for (const book of data.items) {
       const bookInfo = {
         title: book.volumeInfo.title,
-        authors: book.volumeInfo.authors,
+        authors: (book.volumeInfo.authors) ? book.volumeInfo.authors : [],
         description: book.volumeInfo.description ? book.volumeInfo.description.slice(0, 200) + '...' : 'Aucune description disponible',
         image: book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : '',
         id: book.id,
       };
+      results.push(bookInfo);
 
       const bookDiv = document.createElement('div');
       bookDiv.classList.add('book');
@@ -109,6 +117,23 @@ async function searchBooks(title, author) {
       descriptionP.textContent = `Description: ${bookInfo.description}`;
 
       const bookmarkIcon = document.createElement('span');
+      bookmarkIcon.textContent = 'BOOKMARK';
+      bookmarkIcon.id = bookInfo.id;
+      bookmarkIcon.addEventListener('click', (event) => {
+        console.log(event.target.id);
+        let bookClicked = results.find(book => book.id === event.target.id);
+        if(sessionStorage.getItem('books')){
+          let books = JSON.parse(sessionStorage.getItem('books'));
+          books.push(bookClicked);
+          sessionStorage.setItem('books', JSON.stringify(books));
+        }
+        else {
+          let books = [];
+          books.push(bookClicked);
+          sessionStorage.setItem('books', JSON.stringify(books));
+        }
+        console.log(sessionStorage.getItem('books'));
+      })
       bookmarkIcon.classList.add('bookmark-icon');
 
       const image = document.createElement('img');
@@ -125,27 +150,39 @@ async function searchBooks(title, author) {
       bookDiv.appendChild(image);
       bookDiv.appendChild(idP);
 
-      results.push(bookDiv);
+      //results.push(bookDiv);
+      searchResults.appendChild(bookDiv);
 
       console.log('Livre trouvé :', bookInfo);
-    
     }
+    console.log(results.length);
 
-    }
-  
-    else {
-    console.log('Aucun livre trouvé.');
-  }
+    // sessionStorage.setItem('savedBooks', JSON.stringify(results));
+    // }
+
+  //   else {
+  //   console.log('Aucun livre trouvé.');
+   }
 
   return data;
+  }
+
+// const savedBooks = JSON.parse(sessionStorage.getItem('savedBooks')) || [];
+//   savedBooks.forEach(book => {
+//   // myBooksDiv.appendChild(book);
+//   });
 }
 
-}
 
 
-        // autres infos souhaitées
+//DONE :
+        // Afficher les livres récupérés dans les résultats de recherche avec ttes infos souhaitées :
 // - identifiant ;
 // - auteur (s’il y a plusieurs auteurs, n’afficher que le premier) ;
 // - icône pour garder le livre dans sa liste (bookmark) ;
 // - description (limitée aux 200 premiers caractères) ;
 // - image
+// _ Session storage 
+
+//TO DO :
+// - fix sessionStorage
