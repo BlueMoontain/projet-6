@@ -23,6 +23,7 @@ const init = () => {
   searchResultsTitle.textContent = 'Résultats de recherche';
   searchResults.appendChild(searchResultsTitle);
   divContent.appendChild(searchResults);
+  searchResultsTitle.style.display = 'none';
 
   function showForm() {
     const form = document.createElement('form');
@@ -58,8 +59,9 @@ const init = () => {
 
     newBookTitle.after(form);
     addBookButton.style.display = 'none';
-
-    function hideForm(form) {
+    searchResultsTitle.style.display = 'inline';
+  
+    function hideForm(form, searchResults) {
       if (form) {
         form.reset(); 
         form.remove();
@@ -116,6 +118,8 @@ async function searchBooks(title, author) {
       const descriptionP = document.createElement('p');
       descriptionP.textContent = `Description: ${bookInfo.description}`;
 
+
+      // factoriser => 136
       const bookmarkIcon = document.createElement('span');
       bookmarkIcon.textContent = 'BOOKMARK';
       bookmarkIcon.id = bookInfo.id;
@@ -134,6 +138,8 @@ async function searchBooks(title, author) {
         }
         console.log(sessionStorage.getItem('books'));
       })
+
+
       bookmarkIcon.classList.add('bookmark-icon');
 
       const image = document.createElement('img');
