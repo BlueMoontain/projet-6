@@ -24,6 +24,10 @@ const init = () => {
   searchResults.appendChild(searchResultsTitle);
   divContent.appendChild(searchResults);
   searchResultsTitle.style.display = 'none';
+  const hrElement = myBooksDiv.querySelector('hr');
+  hrElement.after(searchResults);
+  
+
 
   function showForm() {
     const form = document.createElement('form');
@@ -60,14 +64,16 @@ const init = () => {
     newBookTitle.after(form);
     addBookButton.style.display = 'none';
     searchResultsTitle.style.display = 'inline';
+    
   
-    function hideForm(form, searchResults) {
+  function hideForm (form) {
       if (form) {
         form.reset(); 
         form.remove();
  
       }
     }
+
 
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
@@ -87,6 +93,7 @@ const init = () => {
 const form = document.querySelector('form');
 
 async function searchBooks(title, author) {
+  let resultsFound = false;
   const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${title}+inauthor:${author}`;
   const response = await fetch(apiUrl);
   const data = await response.json();
@@ -119,28 +126,24 @@ async function searchBooks(title, author) {
       descriptionP.textContent = `Description: ${bookInfo.description}`;
 
 
-      // factoriser => 136
+      // refacto ? => 145
       const bookmarkIcon = document.createElement('span');
       bookmarkIcon.textContent = 'BOOKMARK';
       bookmarkIcon.id = bookInfo.id;
       bookmarkIcon.addEventListener('click', (event) => {
-        console.log(event.target.id);
-        let bookClicked = results.find(book => book.id === event.target.id);
-        if(sessionStorage.getItem('books')){
-          let books = JSON.parse(sessionStorage.getItem('books'));
-          books.push(bookClicked);
-          sessionStorage.setItem('books', JSON.stringify(books));
-        }
-        else {
-          let books = [];
-          books.push(bookClicked);
-          sessionStorage.setItem('books', JSON.stringify(books));
-        }
+        const bookClicked = results.find(book => book.id === event.target.id);
+        const storedBooks = sessionStorage.getItem('books')
+          ? JSON.parse(sessionStorage.getItem('books'))
+          : [];
+        
+        storedBooks.push(bookClicked);
+        sessionStorage.setItem('books', JSON.stringify(storedBooks));
+        
         console.log(sessionStorage.getItem('books'));
-      })
-
+      });
 
       bookmarkIcon.classList.add('bookmark-icon');
+      
 
       const image = document.createElement('img');
       image.src = bookInfo.image;
@@ -163,11 +166,23 @@ async function searchBooks(title, author) {
     }
     console.log(results.length);
 
-    // sessionStorage.setItem('savedBooks', JSON.stringify(results));
-    // }
-
-  //   else {
-  //   console.log('Aucun livre trouvé.');
+    sessionStorage.setItem('savedBooks', JSON.stringify(results));
+    resultsFound = true;
+    }
+  
+      if (!resultsFound && searchResults) {
+      const noResultsMessage = document.createElement('p');
+      noResultsMessage.textContent = 'Aucun livre trouvé.';
+      
+      const existingNoResultsMessage = searchResults.querySelector('#noResultsMessage');
+      if (existingNoResultsMessage) {
+        searchResults.removeChild(existingNoResultsMessage);
+      }
+      
+      searchResults.appendChild(noResultsMessage);
+    }
+    else {
+    console.log('Aucun livre trouvé.');
    }
 
   return data;
