@@ -1,6 +1,7 @@
 const ready = () => {
   if (document.readyState !== 'loading') {
     init();
+                                                                                                                                 // displaySavedBooks();
   } else {
     document.addEventListener('DOMContentLoaded', fn);
   }
@@ -27,8 +28,7 @@ const init = () => {
   const hrElement = myBooksDiv.querySelector('hr');
   hrElement.after(searchResults);
   
-
-
+  
   function showForm() {
     const form = document.createElement('form');
     form.id ="bookForm";
@@ -74,7 +74,6 @@ const init = () => {
       }
     }
 
-
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
       
@@ -99,7 +98,7 @@ async function searchBooks(title, author) {
   const data = await response.json();
   const results = [];
   const searchResults = document.getElementById('searchResultsDiv');
-  searchResults.querySelectorAll('*').forEach(n => n.remove());
+  searchResults.querySelectorAll('*').forEach((n, index) =>  {if(index > 1) n.remove()});
 
   if (data.items && data.items.length > 0) {
     
@@ -113,22 +112,24 @@ async function searchBooks(title, author) {
       };
       results.push(bookInfo);
 
-      const bookDiv = document.createElement('div');
-      bookDiv.classList.add('book');
+      // const bookDiv = document.createElement('div');
+                                                                                                              const bookDiv = displayBook(bookInfo);
+      // bookDiv.classList.add('book');
 
-      const titleP = document.createElement('p');
-      titleP.textContent = `Titre: ${bookInfo.title}`;
+      // const titleP = document.createElement('p');
+      // titleP.textContent = `Titre: ${bookInfo.title}`;
 
-      const authorP = document.createElement('p');
-      authorP.textContent = `Auteur: ${bookInfo.authors[0]}`;
+      // const authorP = document.createElement('p');
+      // authorP.textContent = `Auteur: ${bookInfo.authors[0]}`;
 
-      const descriptionP = document.createElement('p');
-      descriptionP.textContent = `Description: ${bookInfo.description}`;
+      // const descriptionP = document.createElement('p');
+      // descriptionP.textContent = `Description: ${bookInfo.description}`;
 
-
-      // refacto ? => 145
+                                                                                                                  // const bookmarkIcon = document.createElement('i'); span
+                                                                                                                  // bookmarkIcon.classList.add('???', '????'); 
       const bookmarkIcon = document.createElement('span');
-      bookmarkIcon.textContent = 'BOOKMARK';
+      bookmarkIcon.textContent = '🔖';
+      bookmarkIcon.style.cursor = 'pointer';
       bookmarkIcon.id = bookInfo.id;
       bookmarkIcon.addEventListener('click', (event) => {
         const bookClicked = results.find(book => book.id === event.target.id);
@@ -159,7 +160,7 @@ async function searchBooks(title, author) {
       bookDiv.appendChild(image);
       bookDiv.appendChild(idP);
 
-      //results.push(bookDiv);
+                                                                                                                                                                      //results.push(bookDiv);
       searchResults.appendChild(bookDiv);
 
       console.log('Livre trouvé :', bookInfo);
@@ -187,23 +188,77 @@ async function searchBooks(title, author) {
 
   return data;
   }
-
-// const savedBooks = JSON.parse(sessionStorage.getItem('savedBooks')) || [];
-//   savedBooks.forEach(book => {
-//   // myBooksDiv.appendChild(book);
-//   });
+const savedBooks = JSON.parse(sessionStorage.getItem('savedBooks')) || [];
+  savedBooks.forEach(book => {
+  myBooksDiv.appendChild(book);
+  });
 }
 
 
+function displayBook(bookInfo) {
+  const bookDiv = document.createElement('div');
+  bookDiv.classList.add('book');
 
-//DONE :
-        // Afficher les livres récupérés dans les résultats de recherche avec ttes infos souhaitées :
-// - identifiant ;
-// - auteur (s’il y a plusieurs auteurs, n’afficher que le premier) ;
-// - icône pour garder le livre dans sa liste (bookmark) ;
-// - description (limitée aux 200 premiers caractères) ;
-// - image
-// _ Session storage 
+  const titleP = document.createElement('p');
+  titleP.textContent = `Titre: ${bookInfo.title}`;
 
-//TO DO :
-// - fix sessionStorage
+  const authorP = document.createElement('p');
+  authorP.textContent = `Auteur: ${bookInfo.authors[0]}`;
+
+  const descriptionP = document.createElement('p');
+  descriptionP.textContent = `Description: ${bookInfo.description}`;
+
+  const bookmarkIcon = document.createElement('span');
+      bookmarkIcon.textContent = 'BOOKMARK';
+      bookmarkIcon.id = bookInfo.id;
+      bookmarkIcon.addEventListener('click', (event) => {
+        const bookClicked = results.find(book => book.id === event.target.id);
+        const storedBooks = sessionStorage.getItem('books')
+          ? JSON.parse(sessionStorage.getItem('books'))
+          : [];
+        
+        storedBooks.push(bookClicked);
+        sessionStorage.setItem('books', JSON.stringify(storedBooks));
+        
+        console.log(sessionStorage.getItem('books'));
+      });
+
+      bookmarkIcon.classList.add('bookmark-icon');
+      bookDiv.appendChild(bookmarkIcon);
+
+  const searchResults = document.getElementById('searchResultsDiv');
+  searchResults.appendChild(bookDiv);
+  console.log('Livre trouvé :', bookInfo);
+      
+  const image = document.createElement('img');
+  image.src = bookInfo.image;
+
+  const idP = document.createElement('p');
+  idP.textContent = `Identifiant: ${bookInfo.id}`;
+
+  bookDiv.appendChild(titleP);
+  bookDiv.appendChild(authorP);
+  bookDiv.appendChild(descriptionP);
+  bookDiv.appendChild(bookmarkIcon);
+  bookDiv.appendChild(image);
+  bookDiv.appendChild(idP);
+  return bookDiv;
+}
+
+
+function displaySavedBooks() {
+  const savedBooks = JSON.parse(sessionStorage.getItem('books')); // vérifier que tu as bien le 'books' dans le sessionStorage
+  const pochList = document.getElementById('content'); 
+
+  if (savedBooks && savedBooks.length > 0) {
+    for (const book of savedBooks) {
+      const bookDiv = createBookElement(book); //displayBook
+      pochList.appendChild(bookDiv);
+    }
+  } else {
+
+    const noSavedBooksMessage = document.createElement('p');
+    noSavedBooksMessage.textContent = 'Aucun livre sauvegardé dans la poch\'liste.';
+    pochList.appendChild(noSavedBooksMessage);
+  }
+}
