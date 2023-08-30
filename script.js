@@ -1,7 +1,7 @@
 const ready = () => {
   if (document.readyState !== 'loading') {
     init();
-                                                                                                                                 // displaySavedBooks();
+    displaySavedBooks();
   } else {
     document.addEventListener('DOMContentLoaded', fn);
   }
@@ -65,7 +65,7 @@ const init = () => {
     addBookButton.style.display = 'none';
     searchResultsTitle.style.display = 'inline';
     
-  
+
   function hideForm (form) {
       if (form) {
         form.reset(); 
@@ -91,6 +91,7 @@ const init = () => {
 
 const form = document.querySelector('form');
 
+
 async function searchBooks(title, author) {
   let resultsFound = false;
   const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=${title}+inauthor:${author}`;
@@ -98,73 +99,43 @@ async function searchBooks(title, author) {
   const data = await response.json();
   const results = [];
   const searchResults = document.getElementById('searchResultsDiv');
+  const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
   searchResults.querySelectorAll('*').forEach((n, index) =>  {if(index > 1) n.remove()});
+
 
   if (data.items && data.items.length > 0) {
     
-    for (const book of data.items) {
-      const bookInfo = {
-        title: book.volumeInfo.title,
-        authors: (book.volumeInfo.authors) ? book.volumeInfo.authors : [],
-        description: book.volumeInfo.description ? book.volumeInfo.description.slice(0, 200) + '...' : 'Aucune description disponible',
-        image: book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : '',
-        id: book.id,
-      };
-      results.push(bookInfo);
+  for (const book of data.items) {
+    const bookInfo = {
+      title: book.volumeInfo.title,
+      authors: (book.volumeInfo.authors) ? book.volumeInfo.authors : [],
+      description: book.volumeInfo.description ? book.volumeInfo.description.slice(0, 200) + '...' : 'Aucune description disponible',
+      image: book.volumeInfo.imageLinks ? book.volumeInfo.imageLinks.thumbnail : '',
+      id: book.id,
+    };
+    results.push(bookInfo);
+  
+    const bookDiv = displayBook(bookInfo, results);
+    const bookmarkIcon = bookDiv.querySelector('.bookmark-icon'); 
+  
+    bookmarkIcon.addEventListener('click', (event) => {
+      const bookClicked = results.find(book => book.id === event.target.id);
+      const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
+      storedBooks.push(bookClicked);
+      sessionStorage.setItem('books', JSON.stringify(storedBooks));
+      console.log(sessionStorage.getItem('books'));
+    });
+  
+    const image = document.createElement('img');
+    image.src = bookInfo.image;
+  
+    const idP = document.createElement('p');
+    idP.textContent = `Identifiant: ${bookInfo.id}`;
+  
+    console.log('Livre trouvé :', bookInfo);
+  }
+  
 
-      // const bookDiv = document.createElement('div');
-                                                                                                              const bookDiv = displayBook(bookInfo);
-      // bookDiv.classList.add('book');
-
-      // const titleP = document.createElement('p');
-      // titleP.textContent = `Titre: ${bookInfo.title}`;
-
-      // const authorP = document.createElement('p');
-      // authorP.textContent = `Auteur: ${bookInfo.authors[0]}`;
-
-      // const descriptionP = document.createElement('p');
-      // descriptionP.textContent = `Description: ${bookInfo.description}`;
-
-                                                                                                                  // const bookmarkIcon = document.createElement('i'); span
-                                                                                                                  // bookmarkIcon.classList.add('???', '????'); 
-      const bookmarkIcon = document.createElement('span');
-      bookmarkIcon.textContent = '🔖';
-      bookmarkIcon.style.cursor = 'pointer';
-      bookmarkIcon.id = bookInfo.id;
-      bookmarkIcon.addEventListener('click', (event) => {
-        const bookClicked = results.find(book => book.id === event.target.id);
-        const storedBooks = sessionStorage.getItem('books')
-          ? JSON.parse(sessionStorage.getItem('books'))
-          : [];
-        
-        storedBooks.push(bookClicked);
-        sessionStorage.setItem('books', JSON.stringify(storedBooks));
-        
-        console.log(sessionStorage.getItem('books'));
-      });
-
-      bookmarkIcon.classList.add('bookmark-icon');
-      
-
-      const image = document.createElement('img');
-      image.src = bookInfo.image;
-
-      const idP = document.createElement('p');
-      idP.textContent = `Identifiant: ${bookInfo.id}`;
-
-
-      bookDiv.appendChild(titleP);
-      bookDiv.appendChild(authorP);
-      bookDiv.appendChild(descriptionP);
-      bookDiv.appendChild(bookmarkIcon);
-      bookDiv.appendChild(image);
-      bookDiv.appendChild(idP);
-
-                                                                                                                                                                      //results.push(bookDiv);
-      searchResults.appendChild(bookDiv);
-
-      console.log('Livre trouvé :', bookInfo);
-    }
     console.log(results.length);
 
     sessionStorage.setItem('savedBooks', JSON.stringify(results));
@@ -188,14 +159,14 @@ async function searchBooks(title, author) {
 
   return data;
   }
+
 const savedBooks = JSON.parse(sessionStorage.getItem('savedBooks')) || [];
   savedBooks.forEach(book => {
   myBooksDiv.appendChild(book);
   });
 }
 
-
-function displayBook(bookInfo) {
+function displayBook(bookInfo, results) {
   const bookDiv = document.createElement('div');
   bookDiv.classList.add('book');
 
@@ -209,17 +180,15 @@ function displayBook(bookInfo) {
   descriptionP.textContent = `Description: ${bookInfo.description}`;
 
   const bookmarkIcon = document.createElement('span');
-      bookmarkIcon.textContent = 'BOOKMARK';
-      bookmarkIcon.id = bookInfo.id;
-      bookmarkIcon.addEventListener('click', (event) => {
+  bookmarkIcon.textContent = '🔖';
+  bookmarkIcon.style.cursor = 'pointer'; // CSS ?
+  bookmarkIcon.id = bookInfo.id;
+
+  bookmarkIcon.addEventListener('click', (event) => {
         const bookClicked = results.find(book => book.id === event.target.id);
-        const storedBooks = sessionStorage.getItem('books')
-          ? JSON.parse(sessionStorage.getItem('books'))
-          : [];
-        
+        const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
         storedBooks.push(bookClicked);
         sessionStorage.setItem('books', JSON.stringify(storedBooks));
-        
         console.log(sessionStorage.getItem('books'));
       });
 
@@ -252,13 +221,13 @@ function displaySavedBooks() {
 
   if (savedBooks && savedBooks.length > 0) {
     for (const book of savedBooks) {
-      const bookDiv = createBookElement(book); //displayBook
+      const bookDiv = displayBook(book, savedBooks); //displayBook
       pochList.appendChild(bookDiv);
     }
   } else {
-
+  
     const noSavedBooksMessage = document.createElement('p');
-    noSavedBooksMessage.textContent = 'Aucun livre sauvegardé dans la poch\'liste.';
+    noSavedBooksMessage.textContent = 'Retrouvez dans votre poch\'liste tous vos ouvrages sauvegardés';
     pochList.appendChild(noSavedBooksMessage);
   }
 }
