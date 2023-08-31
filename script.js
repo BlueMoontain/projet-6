@@ -160,10 +160,10 @@ async function searchBooks(title, author) {
   return data;
   }
 
-const savedBooks = JSON.parse(sessionStorage.getItem('savedBooks')) || [];
-  savedBooks.forEach(book => {
-  myBooksDiv.appendChild(book);
-  });
+// const savedBooks = JSON.parse(sessionStorage.getItem('savedBooks')) || [];
+//   savedBooks.forEach(book => {
+//   myBooksDiv.appendChild(book);
+//   });
 }
 
 function displayBook(bookInfo, results) {
@@ -221,7 +221,7 @@ function displaySavedBooks() {
 
   if (savedBooks && savedBooks.length > 0) {
     for (const book of savedBooks) {
-      const bookDiv = displayBook(book, savedBooks); //displayBook
+      const bookDiv = displayBook(book, savedBooks);
       pochList.appendChild(bookDiv);
     }
   } else {
@@ -230,4 +230,5 @@ function displaySavedBooks() {
     noSavedBooksMessage.textContent = 'Retrouvez dans votre poch\'liste tous vos ouvrages sauvegardés';
     pochList.appendChild(noSavedBooksMessage);
   }
+  
 }
