@@ -99,7 +99,9 @@ async function searchBooks(title, author) {
   const data = await response.json();
   const results = [];
   const searchResults = document.getElementById('searchResultsDiv');
-  const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
+  console.log(searchResults);
+  //const myBooksDiv = document.getElementById('myBooks');
+  //const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
   searchResults.querySelectorAll('*').forEach((n, index) =>  {if(index > 1) n.remove()});
 
 
@@ -115,7 +117,7 @@ async function searchBooks(title, author) {
     };
     results.push(bookInfo);
   
-    const bookDiv = displayBook(bookInfo, results);
+    const bookDiv = displayBook(bookInfo); // rsuts
     const bookmarkIcon = bookDiv.querySelector('.bookmark-icon'); 
   
     bookmarkIcon.addEventListener('click', (event) => {
@@ -124,6 +126,7 @@ async function searchBooks(title, author) {
       storedBooks.push(bookClicked);
       sessionStorage.setItem('books', JSON.stringify(storedBooks));
       console.log(sessionStorage.getItem('books'));
+      displaySavedBooks();
     });
   
     const image = document.createElement('img');
@@ -133,6 +136,7 @@ async function searchBooks(title, author) {
     idP.textContent = `Identifiant: ${bookInfo.id}`;
   
     console.log('Livre trouvé :', bookInfo);
+    searchResults.appendChild(bookDiv);
   }
   
 
@@ -161,12 +165,16 @@ async function searchBooks(title, author) {
   }
 
 // const savedBooks = JSON.parse(sessionStorage.getItem('savedBooks')) || [];
-//   savedBooks.forEach(book => {
-//   myBooksDiv.appendChild(book);
-//   });
+// savedBooks.forEach(book => {
+//   // let tempresult;
+//   // let bookDiv = displayBook(book, tempresult);
+//   // myBooksDiv.appendChild(bookDiv);
+// });
+// // DECLENCHE ERREUR DE NOEUDS ?
+
 }
 
-function displayBook(bookInfo, results) {
+function displayBook(bookInfo) {
   const bookDiv = document.createElement('div');
   bookDiv.classList.add('book');
 
@@ -179,25 +187,25 @@ function displayBook(bookInfo, results) {
   const descriptionP = document.createElement('p');
   descriptionP.textContent = `Description: ${bookInfo.description}`;
 
-  const bookmarkIcon = document.createElement('span');
-  bookmarkIcon.textContent = '🔖';
+  const bookmarkIcon = document.createElement('i');
+  bookmarkIcon.classList.add('fas', 'fa-bookmark');
   bookmarkIcon.style.cursor = 'pointer'; // CSS ?
   bookmarkIcon.id = bookInfo.id;
 
-  bookmarkIcon.addEventListener('click', (event) => {
-        const bookClicked = results.find(book => book.id === event.target.id);
-        const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
-        storedBooks.push(bookClicked);
-        sessionStorage.setItem('books', JSON.stringify(storedBooks));
-        console.log(sessionStorage.getItem('books'));
-      });
+  // bookmarkIcon.addEventListener('click', (event) => {
+  //   const bookClicked = results.find(book => book.id === event.target.id);
+  //   const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
+  //   storedBooks.push(bookClicked);
+  //   sessionStorage.setItem('books', JSON.stringify(storedBooks));
+  //   console.log(sessionStorage.getItem('books'));
+  // });
 
-      bookmarkIcon.classList.add('bookmark-icon');
-      bookDiv.appendChild(bookmarkIcon);
+  bookmarkIcon.classList.add('bookmark-icon');
+  bookDiv.appendChild(bookmarkIcon);
 
-  const searchResults = document.getElementById('searchResultsDiv');
-  searchResults.appendChild(bookDiv);
-  console.log('Livre trouvé :', bookInfo);
+  // const searchResults = document.getElementById('searchResultsDiv');
+  // searchResults.appendChild(bookDiv);
+  // console.log('Livre trouvé :', bookInfo);
       
   const image = document.createElement('img');
   image.src = bookInfo.image;
@@ -214,21 +222,43 @@ function displayBook(bookInfo, results) {
   return bookDiv;
 }
 
-
 function displaySavedBooks() {
-  const savedBooks = JSON.parse(sessionStorage.getItem('books')); // vérifier que tu as bien le 'books' dans le sessionStorage
-  const pochList = document.getElementById('content'); 
+  const savedBooksJSON = sessionStorage.getItem('books'); 
+  const savedBooks = JSON.parse(savedBooksJSON); 
+  const pochList = document.getElementById('content');
+  pochList.querySelectorAll('*').forEach((n, index) =>  {if(index > 1) n.remove()});
 
-  if (savedBooks && savedBooks.length > 0) {
+  if (savedBooksJSON !== null && savedBooks && savedBooks.length > 0) {
+    console.log('COUCOU', savedBooks);
     for (const book of savedBooks) {
       const bookDiv = displayBook(book, savedBooks);
+      //queryselector bookmark qui va virer le livre de la pochliste (findindex, split et tu resave le sessionstorage)
       pochList.appendChild(bookDiv);
     }
-  } else {
-  
+  } 
+
+  else {
     const noSavedBooksMessage = document.createElement('p');
     noSavedBooksMessage.textContent = 'Retrouvez dans votre poch\'liste tous vos ouvrages sauvegardés';
     pochList.appendChild(noSavedBooksMessage);
   }
-  
 }
+
+// ANCIENNE VERSION :
+// function displaySavedBooks() {
+//   const savedBooks = JSON.parse(sessionStorage.getItem('books')); // vérifier que tu as bien le 'books' dans le sessionStorage
+//   const pochList = document.getElementById('content'); 
+
+//   if (savedBooks && savedBooks.length > 0) {
+//     for (const book of savedBooks) {
+//       const bookDiv = displayBook(book, savedBooks);
+//       pochList.appendChild(bookDiv);
+//     }
+//   } else {
+  
+//     const noSavedBooksMessage = document.createElement('p');
+//     noSavedBooksMessage.textContent = 'Retrouvez dans votre poch\'liste tous vos ouvrages sauvegardés';
+//     pochList.appendChild(noSavedBooksMessage);
+//   }
+  
+// }
