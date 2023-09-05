@@ -27,6 +27,7 @@ const init = () => {
   searchResultsTitle.style.display = 'none';
   const hrElement = myBooksDiv.querySelector('hr');
   hrElement.after(searchResults);
+ 
   
   
   function showForm() {
@@ -118,7 +119,8 @@ async function searchBooks(title, author) {
     results.push(bookInfo);
   
     const bookDiv = displayBook(bookInfo); // rsuts
-    const bookmarkIcon = bookDiv.querySelector('.bookmark-icon'); 
+    const bookmarkIcon = bookDiv.querySelector('.bookmark-icon');
+
   
     bookmarkIcon.addEventListener('click', (event) => {
       const bookClicked = results.find(book => book.id === event.target.id);
@@ -188,25 +190,27 @@ function displayBook(bookInfo) {
   descriptionP.textContent = `Description: ${bookInfo.description}`;
 
   const bookmarkIcon = document.createElement('i');
-  bookmarkIcon.classList.add('fas', 'fa-bookmark');
+  bookmarkIcon.addEventListener('click', toggleBookmark); // toggle
+  bookmarkIcon.addEventListener('click', () => {
+    const bookId = bookInfo.id;
+    if (BookmarkedOrNot(bookId)) {
+      // Si le livre est déjà enregistré, affichez un message d'erreur
+      alert('Vous ne pouvez pas ajouter deux fois le même livre.');
+    } else {
+      // Sinon, enregistrez le livre dans la poch'liste et changez l'icône en poubelle
+      saveBookToPochList(bookInfo);
+      bookmarkIcon.classList.remove('fa-bookmark');
+      bookmarkIcon.classList.add('fa-trash');
+    }
+  });
+
+  bookmarkIcon.classList.add('fas', 'fa-bookmark'); 
   bookmarkIcon.style.cursor = 'pointer'; // CSS ?
   bookmarkIcon.id = bookInfo.id;
 
-  // bookmarkIcon.addEventListener('click', (event) => {
-  //   const bookClicked = results.find(book => book.id === event.target.id);
-  //   const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
-  //   storedBooks.push(bookClicked);
-  //   sessionStorage.setItem('books', JSON.stringify(storedBooks));
-  //   console.log(sessionStorage.getItem('books'));
-  // });
-
   bookmarkIcon.classList.add('bookmark-icon');
   bookDiv.appendChild(bookmarkIcon);
-
-  // const searchResults = document.getElementById('searchResultsDiv');
-  // searchResults.appendChild(bookDiv);
-  // console.log('Livre trouvé :', bookInfo);
-      
+     
   const image = document.createElement('img');
   image.src = bookInfo.image;
 
@@ -244,21 +248,43 @@ function displaySavedBooks() {
   }
 }
 
-// ANCIENNE VERSION :
-// function displaySavedBooks() {
-//   const savedBooks = JSON.parse(sessionStorage.getItem('books')); // vérifier que tu as bien le 'books' dans le sessionStorage
-//   const pochList = document.getElementById('content'); 
+    // bookmarkIcon.addEventListener('click', (event) => {
+  //   const bookClicked = results.find(book => book.id === event.target.id);
+  //   const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
+  //   storedBooks.push(bookClicked);
+  //   sessionStorage.setItem('books', JSON.stringify(storedBooks));
+  //   console.log(sessionStorage.getItem('books'));
+  // });
 
-//   if (savedBooks && savedBooks.length > 0) {
-//     for (const book of savedBooks) {
-//       const bookDiv = displayBook(book, savedBooks);
-//       pochList.appendChild(bookDiv);
-//     }
-//   } else {
+  // const searchResults = document.getElementById('searchResultsDiv');
+  // searchResults.appendChild(bookDiv);
+  // console.log('Livre trouvé :', bookInfo);
+
+
+  // wip about trash icon toggle
+
+  let isBookmarked = false;
   
-//     const noSavedBooksMessage = document.createElement('p');
-//     noSavedBooksMessage.textContent = 'Retrouvez dans votre poch\'liste tous vos ouvrages sauvegardés';
-//     pochList.appendChild(noSavedBooksMessage);
-//   }
   
-// }
+  function toggleBookmark() {
+    const bookmarkIcon = document.querySelector('.fa-bookmark');
+    let isBookmarked = false;
+      if (!isBookmarked) {
+          const trashIcon = document.createElement('i');
+          trashIcon.classList.add('fas', 'fa-trash');
+          bookmarkIcon.replaceWith(trashIcon);
+          isBookmarked = true;
+      } else {
+          const bookmarkIcon = document.createElement('i');
+          bookmarkIcon.classList.add('fas', 'fa-bookmark');
+          trashIcon.replaceWith(bookmarkIcon);
+          isBookmarked = false;
+      }
+  }
+
+  function BookmarkedOrNot(bookId) {
+    const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
+    return storedBooks.some(book => book.id === bookId);
+  }
+
+  bookmarkIcon.addEventListener('click', 'toggleBookmark')
