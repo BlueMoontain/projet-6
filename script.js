@@ -101,8 +101,6 @@ async function searchBooks(title, author) {
   const results = [];
   const searchResults = document.getElementById('searchResultsDiv');
   console.log(searchResults);
-  //const myBooksDiv = document.getElementById('myBooks');
-  //const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
   searchResults.querySelectorAll('*').forEach((n, index) =>  {if(index > 1) n.remove()});
 
 
@@ -194,18 +192,15 @@ function displayBook(bookInfo) {
   bookmarkIcon.addEventListener('click', () => {
     const bookId = bookInfo.id;
     if (BookmarkedOrNot(bookId)) {
-      // Si le livre est déjà enregistré, affichez un message d'erreur
       alert('Vous ne pouvez pas ajouter deux fois le même livre.');
     } else {
-      // Sinon, enregistrez le livre dans la poch'liste et changez l'icône en poubelle
       saveBookToPochList(bookInfo);
       bookmarkIcon.classList.remove('fa-bookmark');
-      bookmarkIcon.classList.add('fa-trash');
+      bookmarkIcon.classList.add('fa-trash-can');
     }
   });
 
   bookmarkIcon.classList.add('fas', 'fa-bookmark'); 
-  bookmarkIcon.style.cursor = 'pointer'; // CSS ?
   bookmarkIcon.id = bookInfo.id;
 
   bookmarkIcon.classList.add('bookmark-icon');
@@ -271,7 +266,7 @@ function displaySavedBooks() {
     let isBookmarked = false;
       if (!isBookmarked) {
           const trashIcon = document.createElement('i');
-          trashIcon.classList.add('fas', 'fa-trash');
+          trashIcon.classList.add('fas', 'fa-trash-can');
           bookmarkIcon.replaceWith(trashIcon);
           isBookmarked = true;
       } else {
