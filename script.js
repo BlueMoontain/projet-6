@@ -46,12 +46,12 @@ const init = () => {
 
     const submitBookButton = document.createElement('button');
     submitBookButton.setAttribute('type', 'submit');
-    submitBookButton.textContent = 'Enregistrer';
+    submitBookButton.textContent = 'Rechercher';
     submitBookButton.id = 'submitBookButton';
 
     const cancelBookButton = document.createElement('button'); 
     cancelBookButton.textContent = 'Annuler';
-    cancelBookButton.id = 'cancelButton';
+    cancelBookButton.id = 'cancelBookButton';
     cancelBookButton.addEventListener('click', () => {
       hideForm(form);
       addBookButton.style.display = 'inline';
