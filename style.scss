@@ -3,15 +3,27 @@
 
 body {
     font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
+    font-size: $font-size-mobile;
 }
 
 h1, h2, h3 {
     font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
 }
 
+.title {
+  background-image: url('pictures/logo.png');
+  background-size: contain; 
+  background-repeat: no-repeat;
+  text-indent: -9999px; 
+  width: 300px;
+  height: 150px; 
+  
+  /*text if logo does not charge*/
+  content: 'Poch\'Lib';
+}
+
 #addBookButton {
     font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
-  
     background-color: #469487;
     &:hover {
       background-color : #336666;
@@ -20,7 +32,6 @@ h1, h2, h3 {
 }
 #submitBookButton {
   font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
-  
   background-color: #469487;
   &:hover {
     background-color : #336666;
@@ -63,6 +74,7 @@ color: #020202
   background-color: #ffffff; // nécessaire ?
 }
 
+
 @keyframes shake {
       0% { transform: translateX(0); }
       20% { transform: translateX(-3px); }
@@ -84,18 +96,21 @@ color: #020202
     }
 }
 
-@mixin bounce {
-    animation: bounce 0.3s ease infinite;
-  
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
-      }
-      40% {
-        transform: translateY(-10px);
-      }
-      60% {
-        transform: translateY(-5px);
-      }
-    }
+// Responsive WIP WIP
+
+$font-size-mobile: 16px;
+$breakpoint-tablet: 768px; 
+$breakpoint-desktop: 1024px; 
+
+@media (min-width: $breakpoint-tablet) {
+  body {
+    font-size: 18px;
+    font-family: sans-serif;
   }
+}
+
+@media (min-width: $breakpoint-desktop) {
+  body {
+    font-size: 22px; 
+}
+}

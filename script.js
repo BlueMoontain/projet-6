@@ -29,7 +29,6 @@ const init = () => {
   hrElement.after(searchResults);
  
   
-  
   function showForm() {
     const form = document.createElement('form');
     form.id ="bookForm";
@@ -81,6 +80,11 @@ const init = () => {
         const inputs = form.querySelectorAll('input[type="text"]');
         const titleValue = inputs[0].value;
         const authorValue = inputs[1].value;
+
+        if (titleValue.trim() === '' || authorValue.trim() === '') {
+          alert('Les champs "Titre du livre" et "Auteur" ne peuvent pas être laissé vides.');
+          return;
+        }
       
         console.log('Titre du livre :', titleValue);
         console.log('Auteur :', authorValue);
@@ -91,7 +95,6 @@ const init = () => {
 }
 
 const form = document.querySelector('form');
-
 
 async function searchBooks(title, author) {
   let resultsFound = false;
@@ -116,18 +119,18 @@ async function searchBooks(title, author) {
     };
     results.push(bookInfo);
   
-    const bookDiv = displayBook(bookInfo); // rsuts
+    const bookDiv = displayBook(bookInfo, true); // rsuts
     const bookmarkIcon = bookDiv.querySelector('.bookmark-icon');
 
   
-    bookmarkIcon.addEventListener('click', (event) => {
-      const bookClicked = results.find(book => book.id === event.target.id);
-      const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
-      storedBooks.push(bookClicked);
-      sessionStorage.setItem('books', JSON.stringify(storedBooks));
-      console.log(sessionStorage.getItem('books'));
-      displaySavedBooks();
-    });
+    // bookmarkIcon.addEventListener('click', (event) => {
+    //   const bookClicked = results.find(book => book.id === event.target.id);
+    //   const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
+    //   storedBooks.push(bookClicked);
+    //   sessionStorage.setItem('books', JSON.stringify(storedBooks));
+    //   console.log(sessionStorage.getItem('books'));
+    //   displaySavedBooks();
+    // });
   
     const image = document.createElement('img');
     image.src = bookInfo.image;
@@ -138,7 +141,6 @@ async function searchBooks(title, author) {
     console.log('Livre trouvé :', bookInfo);
     searchResults.appendChild(bookDiv);
   }
-  
 
     console.log(results.length);
 
@@ -163,18 +165,9 @@ async function searchBooks(title, author) {
 
   return data;
   }
-
-// const savedBooks = JSON.parse(sessionStorage.getItem('savedBooks')) || [];
-// savedBooks.forEach(book => {
-//   // let tempresult;
-//   // let bookDiv = displayBook(book, tempresult);
-//   // myBooksDiv.appendChild(bookDiv);
-// });
-// // DECLENCHE ERREUR DE NOEUDS ?
-
 }
 
-function displayBook(bookInfo) {
+function displayBook(bookInfo, isNew) {
   const bookDiv = document.createElement('div');
   bookDiv.classList.add('book');
 
@@ -182,32 +175,41 @@ function displayBook(bookInfo) {
   titleP.textContent = `Titre: ${bookInfo.title}`;
 
   const authorP = document.createElement('p');
-  authorP.textContent = `Auteur: ${bookInfo.authors[0]}`;
+  authorP.textContent = `Auteur: ${bookInfo.authors.length > 0 ? bookInfo.authors[0] : 'Auteur inconnu'}`;
 
   const descriptionP = document.createElement('p');
-  descriptionP.textContent = `Description: ${bookInfo.description}`;
+  descriptionP.textContent = `Description: ${bookInfo.description ? bookInfo.description.slice(0, 200) : 'Information manquante'}`;
 
   const bookmarkIcon = document.createElement('i');
-  bookmarkIcon.addEventListener('click', toggleBookmark); // toggle
-  bookmarkIcon.addEventListener('click', () => {
-    const bookId = bookInfo.id;
-    if (BookmarkedOrNot(bookId)) {
-      alert('Vous ne pouvez pas ajouter deux fois le même livre.');
-    } else {
-      saveBookToPochList(bookInfo);
-      bookmarkIcon.classList.remove('fa-bookmark');
-      bookmarkIcon.classList.add('fa-trash-can');
-    }
-  });
+  // bookmarkIcon.addEventListener('click', toggleBookmark); // toggle
+  // bookmarkIcon.addEventListener('click', () => {
+  //   const bookId = bookInfo.id;
+  //   if (BookmarkedOrNot(bookId)) {
+  //     alert('Vous ne pouvez pas ajouter deux fois le même livre.');
+  //   } else {
+  //     //saveBookToPochList(bookInfo);
+  //     bookmarkIcon.classList.remove('fa-bookmark');
+  //     bookmarkIcon.classList.add('fa-trash-can');
+  //   }
+  // });
 
-  bookmarkIcon.classList.add('fas', 'fa-bookmark'); 
+
+  bookmarkIcon.classList.add('fas', `${(isNew) ? 'fa-bookmark' : 'fa-trash-can'}`); 
   bookmarkIcon.id = bookInfo.id;
 
   bookmarkIcon.classList.add('bookmark-icon');
+
+  bookmarkIcon.addEventListener('click', () => {
+    toggleBookmark(bookInfo);
+    displaySavedBooks();
+    bookmarkIcon.classList.toggle('fa-bookmark');
+    bookmarkIcon.classList.toggle('fa-trash-can');
+  })
+
   bookDiv.appendChild(bookmarkIcon);
      
   const image = document.createElement('img');
-  image.src = bookInfo.image;
+  image.src = bookInfo.image || 'pictures/unavailable.png'; 
 
   const idP = document.createElement('p');
   idP.textContent = `Identifiant: ${bookInfo.id}`;
@@ -230,8 +232,8 @@ function displaySavedBooks() {
   if (savedBooksJSON !== null && savedBooks && savedBooks.length > 0) {
     console.log('COUCOU', savedBooks);
     for (const book of savedBooks) {
-      const bookDiv = displayBook(book, savedBooks);
-      //queryselector bookmark qui va virer le livre de la pochliste (findindex, split et tu resave le sessionstorage)
+      const bookDiv = displayBook(book, false);
+      //queryselector bookmark qui va virer le livre de la pochliste (findindex, split et tu resave le sessionstorage) : fonction ToggleBookmark
       pochList.appendChild(bookDiv);
     }
   } 
@@ -243,43 +245,82 @@ function displaySavedBooks() {
   }
 }
 
-    // bookmarkIcon.addEventListener('click', (event) => {
-  //   const bookClicked = results.find(book => book.id === event.target.id);
-  //   const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
-  //   storedBooks.push(bookClicked);
-  //   sessionStorage.setItem('books', JSON.stringify(storedBooks));
-  //   console.log(sessionStorage.getItem('books'));
-  // });
-
-  // const searchResults = document.getElementById('searchResultsDiv');
-  // searchResults.appendChild(bookDiv);
-  // console.log('Livre trouvé :', bookInfo);
-
-
   // wip about trash icon toggle
-
   let isBookmarked = false;
-  
-  
-  function toggleBookmark() {
-    const bookmarkIcon = document.querySelector('.fa-bookmark');
-    let isBookmarked = false;
-      if (!isBookmarked) {
-          const trashIcon = document.createElement('i');
-          trashIcon.classList.add('fas', 'fa-trash-can');
-          bookmarkIcon.replaceWith(trashIcon);
-          isBookmarked = true;
-      } else {
-          const bookmarkIcon = document.createElement('i');
-          bookmarkIcon.classList.add('fas', 'fa-bookmark');
-          trashIcon.replaceWith(bookmarkIcon);
-          isBookmarked = false;
-      }
-  }
 
+
+  // function toggleBookmark(event) {
+  //   const bookId = event.target.id;
+  //   const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
+  
+  //   const bookIndex = storedBooks.findIndex(book => book.id === bookId);
+  
+  //   if (bookIndex !== -1) {
+  //     storedBooks.splice(bookIndex, 1);
+  //     sessionStorage.setItem('books', JSON.stringify(storedBooks));
+  //     displaySavedBooks();
+
+  //     event.target.classList.remove('fa-trash-can');       // aucun effet
+  //     event.target.classList.add('fa-bookmark');      // aucun effet
+  //   } else {
+  //     const bookToAdd = results.find(book => book.id === bookId);
+  //     if (bookToAdd) {
+  //       storedBooks.push(bookToAdd);
+  //       sessionStorage.setItem('books', JSON.stringify(storedBooks));
+  
+  //       event.target.classList.remove('fa-bookmark');      // aucun effet
+  //       event.target.classList.add('fa-trash-can');      // aucun effet
+  //     }
+  //   }
+  // }
+  
+  // supprime le livre de la poch'liste OK :
+  function toggleBookmark(book) {
+    //console.log(event);
+    //const bookId = event.target.id;
+    const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
+  
+    const bookIndex = storedBooks.findIndex(({id}) => id === book.id);
+  
+    if (bookIndex !== -1) {
+
+      storedBooks.splice(bookIndex, 1);
+      sessionStorage.setItem('books', JSON.stringify(storedBooks));
+      // displaySavedBooks();
+  
+      //event.target.classList.remove('fa-trash-can');
+      //event.target.classList.add('fa-bookmark');
+    } else {
+      //const bookToAdd = results.find(book => book.id === bookId);
+      //if (bookToAdd) {
+        storedBooks.push(book);
+        sessionStorage.setItem('books', JSON.stringify(storedBooks));
+  
+        //event.target.classList.remove('fa-bookmark');
+        //event.target.classList.add('fa-trash-can');
+      }
+    //}
+  }  
+  
+// fait changer l'icone OK :
+  // function toggleBookmark() {
+  //   const bookmarkIcon = document.querySelector('.fa-bookmark');
+  //   let isBookmarked = false;
+  //     if (!isBookmarked) {
+  //         const trashIcon = document.createElement('i');
+  //         trashIcon.classList.add('fas', 'fa-trash-can');
+  //         bookmarkIcon.replaceWith(trashIcon);
+  //         isBookmarked = true;
+  //     } else {
+  //         const bookmarkIcon = document.createElement('i');
+  //         bookmarkIcon.classList.add('fas', 'fa-bookmark');
+  //         trashIcon.replaceWith(bookmarkIcon);
+  //         isBookmarked = false;
+  //     }
+  // }
+
+  // Necessaire ? 
   function BookmarkedOrNot(bookId) {
     const storedBooks = JSON.parse(sessionStorage.getItem('books')) || [];
     return storedBooks.some(book => book.id === bookId);
   }
-
-  bookmarkIcon.addEventListener('click', 'toggleBookmark')
