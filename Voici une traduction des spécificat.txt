@@ -1,0 +1,50 @@
+Voici une traduction des spécifications fonctionnelles de l'application Poch'Lib :
+
+Présentation de l'entreprise
+"La Plume enchantée" est une librairie familiale créée en 1995, basée à Nice et employant 4 personnes.
+
+Problématique
+De plus en plus de clients effectuent des recherches sur des livres à acheter en ligne mais souhaitent soutenir les librairies locales. C'est pourquoi "La Plume enchantée" souhaite créer une application permettant aux utilisateurs de rechercher des livres en ligne, puis de les récupérer à la librairie.
+
+Fonctionnalités de l'application à développer
+Toutes les fonctionnalités suivantes doivent être mises en œuvre dynamiquement en utilisant JavaScript. Il n'est pas nécessaire d'utiliser des frameworks JavaScript, seulement JavaScript lui-même.
+
+Spécificités
+La structure HTML fournie dans le fichier index.html ne doit en aucun cas être modifiée, sauf dans les cas suivants :
+
+Ajout du logo à télécharger [ici](lien vers le logo).
+Ajout d'une police de caractères depuis Google Fonts.
+Ajout d'un ou plusieurs liens vers une feuille de style CSS (en utilisant le pré-processeur SASS pour optimiser l'écriture du code CSS).
+Ajout d'un ou plusieurs liens vers un fichier JavaScript.
+Liste des fonctionnalités
+
+Au chargement de la page
+Seul le bouton "Ajouter un livre" doit être affiché sur la page. Si des livres sont enregistrés, ceux-ci doivent apparaître sur la page, dans la section "Ma poch’liste".
+
+Lors du clic sur "Ajouter un livre"
+Lorsque l'utilisateur clique sur le bouton "Ajouter un livre", un formulaire de recherche doit s'afficher. Ce formulaire comporte deux champs :
+
+Un champ "Titre du livre".
+Un champ "Auteur".
+Ces deux champs ne doivent pas être vides lors de la soumission du formulaire. Il n'est pas nécessaire de mettre en place des contraintes de validation, mais vous pouvez le faire si vous le souhaitez. Un bouton "Rechercher" doit être présent pour permettre la soumission du formulaire. L'API de Google Books doit être utilisée pour rechercher les livres correspondant aux données saisies dans le formulaire. Lorsque l'utilisateur clique sur le bouton "Rechercher", un bloc sous le formulaire doit afficher les résultats de recherche. Un bouton "Annuler" doit être présent. Lorsque l'utilisateur clique sur ce bouton, le formulaire doit disparaître et laisser place au bouton "Ajouter un livre". Si une recherche était en cours, les résultats de recherche doivent également disparaître.
+Affichage des résultats de recherche
+L'affichage des résultats de recherche doit permettre de lister les livres correspondant aux critères de recherche saisis, en utilisant l'API de Google Books. Pour chaque livre, les éléments suivants doivent être présents :
+
+Identifiant.
+Titre.
+Auteur (s'il y a plusieurs auteurs, n'afficher que le premier).
+Icône pour garder le livre dans sa liste (marque-page).
+Description (limitée aux 200 premiers caractères).
+Image.
+Dans le cas où la description serait manquante, l'indication "Information manquante" devra être présente. Dans le cas où aucune image ne serait présente pour un livre, l'image "unavailable.png" téléchargeable [ici](lien vers l'image) devra être utilisée. Si la recherche ne retourne pas de résultats, le message "Aucun livre n'a été trouvé" devra être affiché. Lorsque l'utilisateur clique sur l'icône "Marque-page", le livre sera ajouté dans la liste des livres à lire de l'utilisateur (poch’liste), en-dessous de l'affichage des résultats. Le livre doit également être enregistré dans une session en utilisant l'API SessionStorage. Le même livre ne pourra pas être ajouté deux fois dans la poch’liste. Le message "Vous ne pouvez pas ajouter deux fois le même livre" devra être affiché si l'utilisateur essaie d'ajouter deux fois le même livre.
+Affichage de la poch’liste
+La liste des livres qui ont été sélectionnés par l'utilisateur doit s'afficher sous la fonctionnalité décrite précédemment. Chacun des livres de la liste doit afficher les mêmes informations que celles décrites dans les résultats de recherche, à l'exception de l'icône "Marque-page", qui sera remplacée par une icône de corbeille pour pouvoir supprimer un livre de sa liste. La suppression d'un livre de sa liste ne doit pas supprimer le livre affiché dans les résultats de recherche. Le rechargement de la page doit permettre d'afficher la liste des livres enregistrés en session via Session Storage.
+
+Icônes du site
+La librairie Font Awesome sera utilisée pour afficher les icônes du site (marque-page et corbeille).
+
+Design du site
+Le design du site web est laissé complètement libre. En revanche, les wireframes devront être respectés. Le projet doit être réalisé en mobile-first. En ce qui concerne le format bureau, seule l'apparence indiquée dans le wireframe associé diffère du format précédent. Le reste demeure inchangé.
+
+Versionnement
+Le projet doit être versionné et disponible sur GitHub. Il est recommandé de travailler avec des pull requests. Dans la mesure où la majorité des communications concernant les projets sur GitHub se font en anglais, vos commits doivent être en anglais.

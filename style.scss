@@ -51,7 +51,7 @@ h1, h2, h3 {
     font-size: 18px;
     color: #469487;
     cursor: pointer;
-    animation: fade 2s ease infinite;
+    animation: fade 1.5s ease infinite;
 }
 
 .fa-trash-can{
@@ -74,6 +74,10 @@ color: #020202
   background-color: #ffffff; // nécessaire ?
 }
 
+img {
+  width: 160px;
+  height: 220px;
+}
 
 @keyframes shake {
       0% { transform: translateX(0); }
@@ -96,8 +100,7 @@ color: #020202
     }
 }
 
-// Responsive WIP WIP
-
+// Responsive media queries WIP WIP
 $font-size-mobile: 16px;
 $breakpoint-tablet: 768px; 
 $breakpoint-desktop: 1024px; 
