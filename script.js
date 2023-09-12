@@ -65,15 +65,15 @@ const init = () => {
     addBookButton.style.display = 'none';
     searchResultsTitle.style.display = 'inline';
 
-  //   // contrainte de validation 
-  //   form.addEventListener('submit', (event) => {
-  //     const valeurAuteur = inputAuthor.value;
+    // contrainte de validation 
+    form.addEventListener('submit', (event) => {
+      const valeurAuteur = inputAuthor.value;
 
-  //     if (valeurAuteur.length < 2) {
-  //         event.preventDefault(); 
-  //         alert("La recherche peut-être plus pertinente avec un nom d'auteur complet");
-  //     }
-  // });
+      if (valeurAuteur.length < 2) {
+          event.preventDefault(); 
+          alert("La recherche peut-être plus pertinente avec un nom d'auteur complet");
+      }
+  });
 
   function hideForm (form) {
       if (form) {
@@ -171,7 +171,7 @@ function displayBook(bookInfo, isNew) {
   bookDiv.classList.add('book');
 
   const titleP = document.createElement('p');
-  titleP.textContent = `Titre: ${bookInfo.title}`;
+  titleP.textContent = `Titre:  ${bookInfo.title}`;
 
   const authorP = document.createElement('p');
   authorP.textContent = `Auteur: ${bookInfo.authors.length > 0 ? bookInfo.authors[0] : 'Auteur inconnu'}`;
@@ -186,12 +186,19 @@ function displayBook(bookInfo, isNew) {
 
   bookmarkIcon.classList.add('bookmark-icon');
 
-  bookmarkIcon.addEventListener('click', () => {
+  bookmarkIcon.addEventListener('click', (event) => {
     toggleBookmark(bookInfo);
     displaySavedBooks();
-    bookmarkIcon.classList.toggle('fa-bookmark');
-    bookmarkIcon.classList.toggle('fa-trash-can');
-  })
+    event.currentTarget.classList.toggle('fa-bookmark');
+    event.currentTarget.classList.toggle('fa-trash-can');
+  });
+  
+  // bookmarkIcon.addEventListener('click', () => {
+  //   toggleBookmark(bookInfo);
+  //   displaySavedBooks();
+  //   bookmarkIcon.classList.toggle('fa-bookmark');
+  //   bookmarkIcon.classList.toggle('fa-trash-can');
+  // })
 
   bookDiv.appendChild(bookmarkIcon);
      
@@ -202,11 +209,12 @@ function displayBook(bookInfo, isNew) {
   idP.textContent = `Identifiant: ${bookInfo.id}`;
 
   bookDiv.appendChild(titleP);
+  bookDiv.appendChild(idP);
   bookDiv.appendChild(authorP);
   bookDiv.appendChild(descriptionP);
-  bookDiv.appendChild(bookmarkIcon);
   bookDiv.appendChild(image);
-  bookDiv.appendChild(idP);
+  bookDiv.appendChild(bookmarkIcon);
+
   return bookDiv;
 }
 
