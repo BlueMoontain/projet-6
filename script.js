@@ -22,11 +22,14 @@ const init = () => {
   searchResults.id = 'searchResultsDiv';
   const searchResultsTitle = document.createElement('h2');
   searchResultsTitle.textContent = 'Résultats de recherche';
+  searchResultsTitle.id = 'searchResults-title'
   searchResults.appendChild(searchResultsTitle);
   divContent.appendChild(searchResults);
   searchResultsTitle.style.display = 'none';
   const hrElement = myBooksDiv.querySelector('hr');
   hrElement.after(searchResults);
+
+      
  
   
   function showForm() {
@@ -63,17 +66,8 @@ const init = () => {
 
     newBookTitle.after(form);
     addBookButton.style.display = 'none';
-    searchResultsTitle.style.display = 'inline';
+    searchResultsTitle.style.display = 'none';
 
-    // contrainte de validation 
-    form.addEventListener('submit', (event) => {
-      const valeurAuteur = inputAuthor.value;
-
-      if (valeurAuteur.length < 2) {
-          event.preventDefault(); 
-          alert("La recherche peut-être plus pertinente avec un nom d'auteur complet");
-      }
-  });
 
   function hideForm (form) {
       if (form) {
@@ -90,11 +84,17 @@ const init = () => {
         const titleValue = inputs[0].value;
         const authorValue = inputs[1].value;
 
-        if (titleValue.trim() === '' || authorValue.trim() === '') {
-          alert('Les champs "Titre du livre" et "Auteur" ne peuvent pas être laissé vides.');
+        if (titleValue.trim() === '' && authorValue.trim() === '') {
+          alert('Veuillez remplir au moins un des champs "Titre du livre" ou "Auteur" pour effectuer la recherche.');
           return;
         }
-      
+        if (authorValue.trim().length < 2) {
+          const confirmation = confirm("La recherche peut être plus pertinente avec un nom d'auteur complet. Voulez-vous quand même rechercher des ouvrages ?");
+          if (!confirmation) {
+            return;
+          }
+        }
+
         console.log('Titre du livre :', titleValue);
         console.log('Auteur :', authorValue);
         searchBooks(titleValue, authorValue);
@@ -130,6 +130,8 @@ async function searchBooks(title, author) {
   
     const bookDiv = displayBook(bookInfo, true); // rsuts
     const bookmarkIcon = bookDiv.querySelector('.bookmark-icon');
+    const searchResultsDiv = document.getElementById('searchResultsDiv');
+    searchResultsDiv.appendChild(bookDiv);
 
     const image = document.createElement('img');
     image.src = bookInfo.image;
@@ -139,6 +141,7 @@ async function searchBooks(title, author) {
   
     console.log('Livre trouvé :', bookInfo);
     searchResults.appendChild(bookDiv);
+    searchResultsTitle.style.display = 'block';
   }
 
     console.log(results.length);
@@ -193,12 +196,6 @@ function displayBook(bookInfo, isNew) {
     event.currentTarget.classList.toggle('fa-trash-can');
   });
   
-  // bookmarkIcon.addEventListener('click', () => {
-  //   toggleBookmark(bookInfo);
-  //   displaySavedBooks();
-  //   bookmarkIcon.classList.toggle('fa-bookmark');
-  //   bookmarkIcon.classList.toggle('fa-trash-can');
-  // })
 
   bookDiv.appendChild(bookmarkIcon);
      
@@ -225,7 +222,7 @@ function displaySavedBooks() {
   pochList.querySelectorAll('*').forEach((n, index) =>  {if(index > 1) n.remove()});
 
   if (savedBooksJSON !== null && savedBooks && savedBooks.length > 0) {
-    console.log('COUCOU', savedBooks);
+    console.log('COUCOU', savedBooks); // a check
     for (const book of savedBooks) {
       const bookDiv = displayBook(book, false);
       pochList.appendChild(bookDiv);
@@ -234,9 +231,9 @@ function displaySavedBooks() {
 
   else {
     const noSavedBooksMessage = document.createElement('p');
-    noSavedBooksMessage.textContent = 'Retrouvez dans votre poch\'liste tous vos ouvrages sauvegardés';
     pochList.appendChild(noSavedBooksMessage);
   }
+
 }
 
   let isBookmarked = false;

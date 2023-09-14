@@ -16,6 +16,19 @@
   justify-content: center; // nécessaire ?
 }
 
+.title {
+  background-image: url('pictures/logo.png');
+  background-size: contain; 
+  background-repeat: no-repeat;
+  text-indent: -9999px; 
+  height: 150px; 
+  background-position: center;
+  margin-bottom:0px;
+
+  /*text if logo does not charge*/
+  content: 'Poch\'Lib';
+}
+
 .book {
   border: 1px solid #ccc;
   padding: 10px;
@@ -26,21 +39,16 @@
   align-items: flex-start;
   margin-right: 25px;
   position: relative;
+  max-width: 50%;
 }
+
+
 
 .book .bookmark-icon{
   position: absolute; 
   top: 5px;
   right: 5px; 
 }
-
-// .book img{
-//   align-items:center;
-// }
-
-// .book .book p:contains("Auteur:") {
-//   font-weight: bold;
-// }
 
 body {
     font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
@@ -59,21 +67,38 @@ margin: 0 auto;
 hr {
   width: 100%;
 }
-#content h2{
-  justify-content: center;
+
+img {
+  width: 160px;
+  height: 220px;
 }
 
-.title {
-  background-image: url('pictures/logo.png');
-  background-size: contain; 
-  background-repeat: no-repeat;
-  text-indent: -9999px; 
-  height: 150px; 
-  background-position: center;
-  margin-bottom:0px;
 
-  /*text if logo does not charge*/
-  content: 'Poch\'Lib';
+#content{
+  background-color: #ffffff;
+  display: flex;
+}
+
+#content h2{
+  justify-content: center;
+
+}
+
+
+#content h2::after {
+  content: "Retrouvez dans votre poch\'liste tous vos ouvrages sauvegardés";
+  font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
+  font-size: 10px;
+  font-style: italic;
+  display: block; 
+  opacity: 0; 
+  visibility: hidden; 
+  transition: opacity 0.3s ease, visibility 0.3s ease; 
+}
+
+#content h2:hover::after {
+  opacity: 1; 
+  visibility: visible;
 }
 
 #addBookButton {
@@ -126,11 +151,12 @@ hr {
  font-size: 14px;
  text-decoration: none;
  vertical-align: middle;
+ &:hover{
+  background-color : yellow;
+  }
   // background-color: #469487;
-  // &:hover {
-  //   background-color : #336666;
-  //   }
 }
+
 
 #cancelBookButton {
   font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
@@ -170,10 +196,10 @@ hr {
       }
     }
 
-#bookDivBackground{ 
-     // WIPWIPWIPWIPWIP;
-color: #020202
-}
+// #bookDivBackground{ 
+//      // WIPWIPWIPWIPWIP;
+// color: #020202
+// }
 
 #bookForm{
   display: flex; 
@@ -185,32 +211,24 @@ color: #020202
   border: 1px solid #ccc;
   padding: 10px;
 }
+
 #bookForm input{
   margin-bottom: 9px;
 }
-#content{
-  background-color: #ffffff;
-  // display: flex;
-  // flex-wrap: nowrap;
-  // overflow-x: auto;
-  // nécessaire ?
+
+#searchResultsDiv{
+  display: flex;
+  overflow-x: auto;
 }
 
-img {
-  width: 160px;
-  height: 220px;
+#searchResults-title{
+  min-width: 80%;
+  position: relative;
+  z-index: 1;
 }
 
-.searchResultsTitle {
-  justify-content: center;
-}
-
-
-
-
-.searchResultsDiv{
- 
-}
+*
+// ANIMATIONS 
 
 @keyframes shake {
       0% { transform: translateX(0); }
@@ -234,7 +252,6 @@ img {
 }
 
 // Responsive media queries WIP WIP
-
 
 @media (min-width: $breakpoint-tablet) {
   body {
