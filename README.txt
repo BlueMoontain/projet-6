@@ -19,10 +19,9 @@ Click "Rechercher" to retrieve books from the Google Books API.
 Click on Bookmark icon to add a book to your reading list (Poch'Liste).
 You can view and manage your reading list below the search results.
 Click the Poubelle icon to remove a book from your reading list.
+
 Contributions
-
 We welcome contributions from the community. If you'd like to contribute, please follow these guidelines:
-
 Fork the repository and create a new branch.
 Make your changes and test them thoroughly.
 Submit a pull request with a clear description of your changes.
@@ -43,4 +42,4 @@ Version History
 Important Notes
 This project uses Font Awesome for icons.
 Follow the wireframes for the project's design.
-Mobile-first design approach is preferred.
+Mobile-first design approach is preferred / declined after for tablet and desktop. 

@@ -1,0 +1,246 @@
+$neutralColor: #ffffff
+$bookpresentationColor: #eeeeee
+$primaryColor: #469487
+$secondaryColor: #28d2be
+$accentColor: #146b61
+$deleteColor: #b9394d
+
+$tablet: 768px
+$desktop: 1024px
+
+@import url("https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300&display=swap")
+
+#myBooks
+  background-color: $neutralColor
+  display: flex
+  flex-direction: column
+  justify-content: center
+
+.title
+  background-image: url("pictures/logo.png")
+  background-size: contain
+  background-repeat: no-repeat
+  text-indent: -9999px
+  height: 150px
+  background-position: center
+  margin-bottom: 0px
+
+.book
+  background-color: $bookpresentationColor
+  border: 1px solid
+  padding: 10px
+  flex: 0 0 auto
+  flex-direction: column
+  position: relative
+  overflow-wrap: break-word
+  width: 41%
+  margin-bottom: 20px
+
+  .bookmark-icon
+    position: absolute
+    top: 5px
+    right: 5px
+
+body, h1, h2, h3, p
+  font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif
+  margin-left: auto
+  font-size: 18px
+  overflow-x: hidden
+  width: 100%
+
+h2
+  display: flex
+  justify-content: center
+
+hr
+  width: 100%
+  margin: 35px 0px 0px 0px
+
+img
+  width: 145px
+  height: 220px
+    margin-top: auto
+
+#content 
+ margin: auto
+ text-align: center
+ width: 90%
+
+
+#content
+  .book
+    margin-top: auto
+    width: 93%
+    margin: 4px
+
+#addBookButton
+  font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif
+  background-color: $primaryColor
+  border-top: 1px solid $secondaryColor
+  background: linear-gradient(linear, left top, left bottom, from($secondaryColor), to($accentColor))
+  padding: 15px 55px
+  margin: 0 auto 
+  -webkit-border-radius: 8px
+  -moz-border-radius: 8px
+  border-radius: 8px
+  -webkit-box-shadow: black 0 1px 0
+  -moz-box-shadow: black 0 1px 0
+  box-shadow: black 0 1px 0
+  text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0
+  color: white
+  font-size: 18px
+  text-decoration: none
+
+
+#submitBookButton
+  font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif
+  background: linear-gradient(to bottom, $secondaryColor, $accentColor)
+  padding: 5px 26px
+  margin: 0 auto 0 0
+  border: none
+  -webkit-border-radius: 8px
+  -moz-border-radius: 8px
+  border-radius: 8px
+  -webkit-box-shadow: black 0 1px 0
+  -moz-box-shadow: black 0 1px 0
+  box-shadow: black 0 1px 0
+  text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0
+  color: white
+  font-size: 14px
+  text-decoration: none
+  margin-bottom: 10px
+  margin-top: 10px
+
+
+#cancelBookButton
+  font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif
+  background-color: $deleteColor
+  padding: 5px 36px
+  margin: 0 auto 0 0
+  border: none
+  -webkit-border-radius: 8px
+  -moz-border-radius: 8px
+  border-radius: 8px
+  -webkit-box-shadow: black 0 1px 0
+  -moz-box-shadow: black 0 1px 0
+  box-shadow: black 0 1px 0
+  text-shadow: rgba(0, 0, 0, 0.4) 0 1px 0
+  color: white
+  font-size: 14px
+  text-decoration: none
+  vertical-align: middle
+
+  &:hover
+    background-color: darken($deleteColor, 10%)
+
+.fa-bookmark:before
+  font-weight: 900
+  font-size: 18px
+  color: $primaryColor
+  cursor: pointer
+  animation: fade 1.5s ease infinite
+  margin-left: auto
+  margin-top: auto
+
+.fa-trash-can
+  color: $deleteColor
+  cursor: pointer
+
+  &:hover
+    animation: shake 0.5s ease infinite
+
+#bookForm
+  display: flex
+  flex-direction: column
+  justify-content: center
+  padding: 10px
+
+  input
+    margin-bottom: 9px
+
+#label
+  font-size: smaller
+
+#searchResultsDiv
+ margin : auto
+
+
+#resultsDiv
+  display: flex
+  justify-content: center
+  flex-wrap: wrap
+  gap: 5px
+  margin-left: 2px
+  margin-right: 2px
+
+.hidden 
+  display: none
+
+.important-info
+  font-weight: bold
+
+@keyframes shake
+  0%
+    transform: translateX(0)
+
+  20%
+    transform: translateX(-3px)
+
+  40%
+    transform: translateX(3px)
+
+  60%
+    transform: translateX(-3px)
+
+  80%
+    transform: translateX(3px)
+
+  100%
+    transform: translateX(0)
+
+@keyframes fade
+  0%
+    opacity: 0.8
+
+  50%
+    opacity: 1
+
+  100%
+    opacity: 0.8
+
+@media (min-width: $tablet)
+  img
+    width: 200px
+    height: 280px
+
+  #submitBookButton
+    font-size: 18px
+
+  #cancelBookButton
+    font-size: 18px
+    padding: 5px 38px
+
+  #addBookButton
+    font-size: larger
+
+  .book
+    align-items: center
+    p
+      font-size: 16px
+
+@media (min-width: $desktop)
+  body, h1, h2, h3, p
+    font-size: 25px
+    
+  #submitBookButton
+    font-size: 22px
+  
+  #cancelBookButton
+    font-size: 22px
+    padding: 5px 42px
+  
+  #addBookButton
+    font-size: larger
+
+  .book
+    margin-right: 25px
